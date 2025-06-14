@@ -10,7 +10,7 @@ int main()
     std::string username;
     int menuChoice, gamerScore = 0, choice, answer;
     std::string riddles[5] = {
-        "I am a number. Multiply me by 2 and add 6, you get 20. What am I?",
+        "Multiply me by 2 and add 6, you get 20. What am I?",
         "I'm the square of 5. What number am I?",
         "What is the sum of the first 4 natural numbers?",
         "I'm 3 more than twice 4. What number am I?",
@@ -48,6 +48,7 @@ int main()
 void startgame(std::string (&questions)[5], int (&answers)[5], int &score, std::string &name, int &answer, int &choice)
 {
     int switcher;
+    int userAnswers[5];
     system("cls");
     name[0] = toupper(name[0]);
     std::cout << "Hey " << name << ".\nWe Will Have Five Riddles For You.\nProvide A Correct Answer To Each Riddle.\nYour Score Is Currently 0, We'll Keep Your Score Updated Throughout The Game.\nNote That All Answers Should Be Integers.\nGood Luck.\nPress Enter To Start Gaming...";
@@ -62,6 +63,7 @@ void startgame(std::string (&questions)[5], int (&answers)[5], int &score, std::
         std::cout << "Riddle " << (i + 1) << ": " << questions[i] << std::endl;
         std::cout << "Answer:";
         std::cin >> answer;
+        userAnswers[i] = answer;
         if (answer == answers[i])
         {
             score += 1;
@@ -83,49 +85,56 @@ void startgame(std::string (&questions)[5], int (&answers)[5], int &score, std::
     std::cout << "Game Over,Press Enter To View Results...";
     std::cin.get();
     system("cls");
-    std::cout << "Results:\n";
+
+    std::cout << std::left << std::setw(5) << "No."
+              << std::setw(55) << "Question"
+              << std::setw(15) << "Your Answer"
+              << std::setw(15) << "Correct Answer"
+              << std::setw(15) << "Score" << std::endl;
+    std::cout << std::string(100, '-') << std::endl;
+    int totalScore = 0;
+    for (int i = 0; i < 5; i++)
+    {
+        bool correct = (userAnswers[i] == answers[i]);
+        if (correct)
+            totalScore++;
+        std::cout << std::left << std::setw(5) << (i + 1)
+                  << std::setw(55) << questions[i]
+                  << std::setw(15) << userAnswers[i]
+                  << std::setw(15) << answers[i]
+                  << std::setw(10) << (correct ? "Correct" : "Incorrect") << std::endl;
+    }
+    std::cout << std::string(100, '-') << std::endl;
     std::cout << "Gamer Name    : " << name << '\n';
-    std::cout << "Highest Score : " << score << '\n';
-    if (((score / float(5)) * 100) < 50)
+    std::cout << "Highest Score : " << totalScore << "\n";
+    if (((totalScore / float(5)) * 100) < 50)
     {
         std::cout << "Status        : Bad Gamer" << '\n';
-        std::cout << "Press Enter To Continue...";
-        std::cin.get();
-        system("cls");
-        std::cout << "Options\n1.Replay\n2.Exit Game\n   Option:";
-
-        switch (switcher)
-        {
-        case 1:
-            startgame((&questions)[5], (&answers)[5], score, name, answer, choice);
-            break;
-
-        default:
-            std::cout << "Thank You For Playing.\nExiting Game...";
-            break;
-        }
     }
     else
     {
         std::cout << "Status        : Good Gamer" << '\n';
-        std::cout << "Press Enter To Continue...";
-        std::cin.get();
-        system("cls");
+    }
+    std::cout << "Press Enter To Continue...";
+    std::cin.get();
+    system("cls");
+    std::cout << "Do You Want To Play Again?\n1.Yes\n2.No\nOption:";
+    std::cin >> switcher;
+    std::cin.ignore(); // Clear the newline character from the input buffer
 
-        switch (switcher)
-        {
-        case 1:
-        {
-            main();
-            break;
-        }
+    switch (switcher)
+    {
+    case 1:
+    {
+        main();
+        break;
+    }
 
-        default:
-        {
-            std::cout << "Thank You For Playing.\nExiting Game...";
-            break;
-        }
-        }
+    default:
+    {
+        std::cout << "Thank You For Playing.\nExiting Game...";
+        break;
+    }
     }
 };
 void getandDisplayUserInfo(std::string &name)
